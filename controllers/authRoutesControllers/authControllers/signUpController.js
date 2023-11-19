@@ -1,11 +1,17 @@
 // Import Models
 import User from "../../../models/User.js";
 
+// ----------------------------------------------------------------------------------------------------|
+
 // Import Dependencies
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 
+// ----------------------------------------------------------------------------------------------------|
+
 dotenv.config();
+
+//######################################################################################################
 
 //  *                *         .                      *            .   *           .    *
 //                                *                  *  .                .
@@ -20,28 +26,41 @@ dotenv.config();
 
 
 // No Header Param
-// // Body -> { userName: ${ String }, password: ${ String } }
+// Body -> { userName: ${ String }, password: ${ String } }
+
+//######################################################################################################
 
 const signUpController = async ( req, res ) => {
     try{
-      // Validate Body Parameters and Return Error If There Is Mıssing Param
+// |
+// |
+// |
+// |_ Validate Body Parameters and Return Error If There Is Mıssing Param
       if( !req.body.userName || !req.body.password ){  
             return res.status( 400 ).json({ error: true, message: "Missing Params" }); 
       }
-
-      // Check If There Is Any User With Same User Name
+// ____________________________________________________________________________________________________|
+// |
+// |
+// |_ Check If There Is Any User With Same User Name
       const user = await User.findOne({ userName: req.body.userName, });
-
-      //  Return Error If There Is Any User With Same User Name
+// ____________________________________________________________________________________________________|
+// |
+// |
+// |_ Return Error If There Is Any User With Same User Name
       if( user ){ 
             return res.status( 400 ).json({ error: true, message: "User Allready Exists" }); 
       }
-  
-      // Encrypt Users Password
+// ____________________________________________________________________________________________________|
+// |
+// |
+// |_ Encrypt Users Password
       const salt = await bcrypt.genSalt( Number( process.env.SALT ) );
       const hashPassword = await bcrypt.hash( req.body.password, salt );
-  
-      // Create User
+// ____________________________________________________________________________________________________|
+// |
+// |
+// |_ Create User
       await new User({ userName: req.body.userName, password: hashPassword })
        .save() // Handle account verification.
        .then(
@@ -56,6 +75,8 @@ const signUpController = async ( req, res ) => {
         }
        );
 
+// |____________________________________________________________________________________________________|
+
     }catch( err ){
 
       // General Error Message
@@ -64,6 +85,8 @@ const signUpController = async ( req, res ) => {
 
     }
 }
+
+//######################################################################################################
 
 export default signUpController;
 

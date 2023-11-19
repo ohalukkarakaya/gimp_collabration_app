@@ -1,10 +1,17 @@
 // Import Dependencies
 import dotenv from "dotenv";
 
+// ----------------------------------------------------------------------------------------------------|
+
 // Import Helpers
 import verifyRefreshToken from "../../../helpers/verifyRefreshToken.js";
 
+// ----------------------------------------------------------------------------------------------------|
+
+// Set ".env" Conf
 dotenv.config();
+
+//######################################################################################################
 
 //  *                *         .                      *            .   *           .    *
 //                                *                  *  .                .
@@ -18,20 +25,28 @@ dotenv.config();
 // No Header Param.
 // Body -> { refreshToken: ${ String } }
 
+//######################################################################################################
+
 const getNewAccessTokenController = async ( req, res ) => {
     try{
-
-        // Get Refresh Token From Body and Return Error If It Doesn't Exists
+// |
+// |
+// |
+// |___ Get Refresh Token From Body and Return Error If It Doesn't Exists
         const { refreshToken } = req.body;
         if ( !req.body.refreshToken ) {
             return res.status( 400 )
                       .json({ error: true, message: error.details[ 0 ].message });
         }
-
-        // Verify Refresh Token
+// ____________________________________________________________________________________________________|
+// |
+// |
+// |___ Verify Refresh Token
         const tokenDetails = await verifyRefreshToken( refreshToken );
-
-        // Return Error
+// ____________________________________________________________________________________________________|
+// |
+// |
+// |___ Return Error
         if( tokenDetails.error ){
             return res.status( 400 )
                       .json(
@@ -41,16 +56,20 @@ const getNewAccessTokenController = async ( req, res ) => {
                         }
                       );
         }
-
-        // Prepare Payload For Token
+// ____________________________________________________________________________________________________|
+// |
+// |
+// |___ Prepare Payload For Token
         const payload = { _id: tokenDetails.tokenDetails._id };
         const accessToken = jwt.sign(
                                     payload, 
                                     env.ACCESS_TOKEN_PRIVATE_KEY, 
                                     { expiresIn: "5m" }
                                 );
-        
-        // Return New Access Token
+// ____________________________________________________________________________________________________|
+// |
+// |
+// |___ Return New Access Token
         return res.status( 200 )
                   .json(
                     {
@@ -60,6 +79,8 @@ const getNewAccessTokenController = async ( req, res ) => {
                     }
                   );
 
+// |____________________________________________________________________________________________________|
+
     }catch( err ){
 
       // General Error Message
@@ -68,6 +89,8 @@ const getNewAccessTokenController = async ( req, res ) => {
 
     }
 }
+
+//######################################################################################################
 
 export default getNewAccessTokenController;
 

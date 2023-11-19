@@ -1,10 +1,17 @@
 // Import Models
 import UserToken from "../../../models/UserToken.js";
 
+// ----------------------------------------------------------------------------------------------------|
+
 // Import Dependencies
 import dotenv from "dotenv";
 
+// ----------------------------------------------------------------------------------------------------|
+
+// set ".env" conf
 dotenv.config();
+
+//######################################################################################################
 
 //  *                *         .                      *            .   *           .    *
 //                                *                  *  .                .
@@ -18,9 +25,14 @@ dotenv.config();
 // No Header Param.
 // Body -> { refreshToken: ${ String } }
 
+//######################################################################################################
+
 const logoutController = async ( req, res ) => {
     try{
-        // Validate Refresh Token Param Coming From Body and Return Error If It Doesn't Exists
+// |
+// |
+// |
+// |___ Validate Refresh Token Param Coming From Body and Return Error If It Doesn't Exists
         const { refreshToken } = req.body;
         if( !refreshToken ){
             return res.status( 400 )
@@ -29,8 +41,10 @@ const logoutController = async ( req, res ) => {
                             message: error.details[ 0 ].message
                        });
         }
-
-        // Check If User Has Any Token, If Does Not, Return Success Message Anyway.
+// ____________________________________________________________________________________________________|
+// |
+// |
+// |___ Check If User Has Any Token, If Does Not, Return Success Message Anyway.
         const userToken = await UserToken.findOne({ token: refreshToken });
         if( !userToken ){
             return res.status( 200 )
@@ -39,16 +53,22 @@ const logoutController = async ( req, res ) => {
                             message: "Logged Out Successfully"
                       });
         }
-
-        // Delete Users Token
+// ____________________________________________________________________________________________________|
+// |
+// |
+// |___ Delete Users Token
         await userToken.remove();
-
-        // Return Success Message
+// ____________________________________________________________________________________________________|
+// |
+// |
+// |___ Return Success Message
         return res.status( 200 )
                   .json({
                         error: false,
                         message: "Logged Out Successfully"
                    });
+
+// |____________________________________________________________________________________________________|
 
     }catch( err ){
 
@@ -58,6 +78,8 @@ const logoutController = async ( req, res ) => {
 
     }
 }
+
+//######################################################################################################
 
 export default logoutController;
 
